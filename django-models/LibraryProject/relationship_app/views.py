@@ -58,3 +58,13 @@ def is_admin(user):
 @user_passes_test(is_admin)
 def admin_view(request):
     return render(request, 'relationship_app/admin_view.html')
+
+@login_required
+@user_passes_test(check_role('Librarian'))
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+@login_required
+@user_passes_test(check_role('Member'))
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')

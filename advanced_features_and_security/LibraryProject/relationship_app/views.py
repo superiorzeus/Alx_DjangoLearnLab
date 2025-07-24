@@ -98,7 +98,7 @@ def edit_book(request, pk):
         form = BookForm(request.POST, instance=book)
         if form.is_valid():
             form.save()
-            return redirect('book_list')  
+            return redirect('book_list')  # Adjust to your URL name
     else:
         form = BookForm(instance=book)
     return render(request, 'relationship_app/book_form.html', {'form': form})
@@ -109,5 +109,5 @@ def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         book.delete()
-        return redirect('book_list') 
+        return redirect('book_list')  # Adjust to your URL name
     return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})

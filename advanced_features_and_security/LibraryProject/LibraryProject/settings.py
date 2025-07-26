@@ -32,14 +32,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'bookshelf',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bookshelf',
     'relationship_app',
+    'csp',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware'
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -112,6 +114,85 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+# ------------------
+# SECURITY SETTINGS
+# ------------------
+
+#    CSRF_COOKIE_SECURE: Ensures the CSRF cookie is only sent over HTTPS.
+#    Crucial for production when HTTPS is enabled.
+#    Set to True in production if using HTTPS.
+CSRF_COOKIE_SECURE = False # Set to True for production with HTTPS!
+
+#    SESSION_COOKIE_SECURE: Ensures the session cookie is only sent over HTTPS.
+#    Crucial for production when HTTPS is enabled.
+#    Set to True in production if using HTTPS.
+SESSION_COOKIE_SECURE = False # Set to True for production with HTTPS!
+
+#    SECURE_BROWSER_XSS_FILTER: Activates the browser's XSS filter.
+#    Django adds an X-XSS-Protection: 1; mode=block header.
+#    Always set to True.
+SECURE_BROWSER_XSS_FILTER = True
+
+#    SECURE_CONTENT_TYPE_NOSNIFF: Prevents browsers from MIME-sniffing content.
+#    Adds an X-Content-Type-Options: nosniff header.
+#    Helps prevent XSS attacks by ensuring browser interprets content types correctly.
+#    Always set to True.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+#    X_FRAME_OPTIONS: Controls whether your site can be embedded in an iframe.
+#    This helps prevent clickjacking attacks.
+#    'DENY' means nobody can embed your site.
+#    'SAMEORIGIN' means only your own site can embed itself.
+#    'DENY' is generally more secure if iframes are not needed.
+X_FRAME_OPTIONS = 'DENY' # Or 'SAMEORIGIN' if you need to embed your own site
+
+# Optional but highly recommended for production (requires HTTPS setup)
+#    SECURE_SSL_REDIRECT: Redirects all non-HTTPS requests to HTTPS.
+#    Set to True in production if your site exclusively uses HTTPS.
+# SECURE_SSL_REDIRECT = True # Uncomment and set to True for production with HTTPS!
+
+#    SECURE_HSTS_SECONDS: Enables HTTP Strict Transport Security (HSTS).
+#    Tells browsers to only connect to your site via HTTPS for a given duration.
+#    Set to a large number (e.g., 31536000 for 1 year) in production.
+# SECURE_HSTS_SECONDS = 0 # Set to a large integer for production with HTTPS!
+
+#    SECURE_HSTS_INCLUDE_SUBDOMAINS: Include subdomains in HSTS policy.
+#    Set to True if you want HSTS to apply to all subdomains.
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = False # Set to True for production with HTTPS!
+
+#    SECURE_REFERRER_POLICY: Controls how much referrer information is sent.
+#    'same-origin' is a good default for security.
+#    See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
+# SECURE_REFERRER_POLICY = 'same-origin' # Uncomment for production
+
+# -----------------------
+# END SECURITY SETTINGS
+# -----------------------
+
+# -----------------------------------------------------------------
+# CONTENT SECURITY POLICY (CSP) SETTINGS 
+# https://django-csp.readthedocs.io/en/latest/migration-guide.html
+# -----------------------------------------------------------------
+
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'",),
+        'script-src': ("'self'", "'unsafe-inline'"), # You might need to add specific CDN URLs here
+        'style-src': ("'self'", "'unsafe-inline'"),  # You might need to add specific CDN URLs here
+        'img-src': ("'self'",), # You might need to add 'data:' or external image hosts
+        'font-src': ("'self'",), # You might need to add external font hosts
+        'connect-src': ("'self'",),
+        'object-src': ("'none'",),
+        'frame-src': ("'self'",),
+        # 'report-uri': '/csp-report/', # Uncomment if you want to set up reporting
+    }
+}
+
+# -----------------
+# END CSP SETTINGS
+# -----------------
 
 
 # Static files (CSS, JavaScript, Images)

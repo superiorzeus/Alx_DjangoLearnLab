@@ -153,6 +153,11 @@ X_FRAME_OPTIONS = 'DENY' # Or 'SAMEORIGIN' if you need to embed your own site
 #    Set to True in production if your site exclusively uses HTTPS.
 SECURE_SSL_REDIRECT = True # Uncomment and set to True for production with HTTPS!
 
+# When running behind a proxy that handles SSL, this header tells Django
+# that the request was originally secure (HTTPS).
+# Essential for SECURE_SSL_REDIRECT to work correctly in production setups with proxies.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 #    SECURE_HSTS_SECONDS: Enables HTTP Strict Transport Security (HSTS).
 #    Tells browsers to only connect to your site via HTTPS for a given duration.
 #    Set to a large number (e.g., 31536000 for 1 year) in production.

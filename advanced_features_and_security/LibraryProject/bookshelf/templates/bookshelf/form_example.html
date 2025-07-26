@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Form</title>
+</head>
+<body>
+    <h1>Submit Your Information</h1>
+    <form method="post">
+        {% csrf_token %} {# Always include for POST forms! #}
+        {{ form.as_p }} {# This will render all fields of your ExampleForm #}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

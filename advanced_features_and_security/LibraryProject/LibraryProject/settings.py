@@ -123,12 +123,12 @@ USE_TZ = True
 #    CSRF_COOKIE_SECURE: Ensures the CSRF cookie is only sent over HTTPS.
 #    Crucial for production when HTTPS is enabled.
 #    Set to True in production if using HTTPS.
-CSRF_COOKIE_SECURE = False # Set to True for production with HTTPS!
+CSRF_COOKIE_SECURE = True # Set to True for production with HTTPS!
 
 #    SESSION_COOKIE_SECURE: Ensures the session cookie is only sent over HTTPS.
 #    Crucial for production when HTTPS is enabled.
 #    Set to True in production if using HTTPS.
-SESSION_COOKIE_SECURE = False # Set to True for production with HTTPS!
+SESSION_COOKIE_SECURE = True # Set to True for production with HTTPS!
 
 #    SECURE_BROWSER_XSS_FILTER: Activates the browser's XSS filter.
 #    Django adds an X-XSS-Protection: 1; mode=block header.
@@ -151,7 +151,7 @@ X_FRAME_OPTIONS = 'DENY' # Or 'SAMEORIGIN' if you need to embed your own site
 # Optional but highly recommended for production (requires HTTPS setup)
 #    SECURE_SSL_REDIRECT: Redirects all non-HTTPS requests to HTTPS.
 #    Set to True in production if your site exclusively uses HTTPS.
-# SECURE_SSL_REDIRECT = True # Uncomment and set to True for production with HTTPS!
+SECURE_SSL_REDIRECT = True # Uncomment and set to True for production with HTTPS!
 
 #    SECURE_HSTS_SECONDS: Enables HTTP Strict Transport Security (HSTS).
 #    Tells browsers to only connect to your site via HTTPS for a given duration.
@@ -160,7 +160,7 @@ X_FRAME_OPTIONS = 'DENY' # Or 'SAMEORIGIN' if you need to embed your own site
 
 #    SECURE_HSTS_INCLUDE_SUBDOMAINS: Include subdomains in HSTS policy.
 #    Set to True if you want HSTS to apply to all subdomains.
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = False # Set to True for production with HTTPS!
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True # Set to True for production with HTTPS!
 
 #    SECURE_REFERRER_POLICY: Controls how much referrer information is sent.
 #    'same-origin' is a good default for security.

@@ -8,6 +8,7 @@ from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.decorators import permission_required
 from .models import UserProfile
+from bookshelf.forms import CustomUserCreationForm
 
 # Create your views here.
 # Function-based view to list all books
@@ -111,3 +112,18 @@ def delete_book(request, pk):
         book.delete()
         return redirect('book_list')  # Adjust to your URL name
     return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
+
+
+def register_view(request):
+    if request.method == 'POST':
+        # Use your custom form here
+        form = CustomUserCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  
+    else:
+        # Use your custom form here
+        form = CustomUserCreationForm()
+    
+    # Make sure the template path is correct
+    return render(request, 'relationship_app/register.html', {'form': form})

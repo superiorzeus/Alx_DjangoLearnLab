@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,13 +32,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'bookshelf',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookshelf',
     'relationship_app',
 ]
 
@@ -117,6 +118,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Optional: Where Django will look for static files *within* your apps
+# and other specified directories. This is for development.
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    # Add any other directories here that contain static files
+]
+
+# The absolute path to the directory where `collectstatic` will gather
+# all static files for deployment. THIS IS WHAT'S MISSING.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Or Path(BASE_DIR) / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

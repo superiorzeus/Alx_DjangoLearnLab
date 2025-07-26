@@ -23,3 +23,10 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'author', 'publication_year']
+
+
+class ExampleForm(forms.Form):
+    # You can add some dummy fields here, or leave it empty if it's just a placeholder
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea)

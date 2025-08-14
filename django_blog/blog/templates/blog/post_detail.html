@@ -1,3 +1,4 @@
+<!-- blog/templates/blog/post_detail.html -->
 {% extends "blog/base.html" %}
 {% block content %}
     <article>
@@ -13,4 +14,36 @@
             </div>
         {% endif %}
     </article>
+
+    <!-- Comment Section -->
+    <hr>
+    <h3>Comments ({{ post.comments.count }})</h3>
+    {% for comment in post.comments.all %}
+        <div class="comment">
+            <p>{{ comment.content }}</p>
+            <p class="comment-meta">
+                by {{ comment.author }} on {{ comment.created_at|date:"F d, Y" }}
+                {% if user.is_authenticated and user == comment.author %}
+                    <span>
+                        | <a href="{% url 'comment_update' comment.pk %}">Edit</a>
+                        | <a href="{% url 'comment_delete' comment.pk %}">Delete</a>
+                    </span>
+                {% endif %}
+            </p>
+        </div>
+    {% empty %}
+        <p>No comments yet. Be the first to comment!</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <hr>
+        <h4>Leave a comment</h4>
+        <form method="post" action="{% url 'add_comment' post.pk %}">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Submit Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+    {% endif %}
 {% endblock %}

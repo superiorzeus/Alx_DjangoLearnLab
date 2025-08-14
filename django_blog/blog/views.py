@@ -47,6 +47,16 @@ def profile(request):
         form = UserUpdateForm(instance=request.user)
     return render(request, 'blog/profile.html', {'form': form})
 
+# view for displaying posts filtered by a specific tag
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/home.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Post.objects.filter(tags__slug=self.kwargs['tag_slug']).order_by('-created_on')
+
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'

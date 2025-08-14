@@ -95,22 +95,18 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user == post.author
 
-# Function-based view to add a new comment
-@login_required
-def add_comment(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            messages.success(request, 'Your comment has been added!')
-            return redirect('post_detail', pk=post.pk)
-    # If not a POST request or form is invalid, we return to the post detail page.
-    # The form will be rendered as part of the PostDetailView.
-    return redirect('post_detail', pk=post.pk)
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/post_detail.html'
+
+    def form_valid(self, form):
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.kwargs['post_pk']})
 
 # Class-based view to update a comment
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

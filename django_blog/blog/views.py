@@ -12,6 +12,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.db.models import Q
 
 # Create your views here.
 
@@ -50,7 +51,31 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-    ordering = ['-published_date']
+    ordering = ['-created_on']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tag = self.request.GET.get('tag')
+        if tag:
+            queryset = queryset.filter(tags__name__in=[tag])
+        return queryset
+
+# new search view
+def search(request):
+    query = request.GET.get('q')
+    posts = Post.objects.all()
+
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/search_results.html', {
+        'query': query,
+        'posts': posts
+    })
 
 class PostDetailView(DetailView):
     model = Post

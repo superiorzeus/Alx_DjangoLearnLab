@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+from rest_framework.authtoken.models import Token
 from .models import CustomUser
 
 
@@ -17,20 +18,30 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
+        # Use Django's built-in user manager
+        user = get_user_model().objects.create_user(
             username=validated_data['username'],
-            email=validated_data['email'],
+            email=validated_data.get('email'),
             password=validated_data['password']
         )
+
+        # Create token for the new user
+        Token.objects.create(user=user)
+
         return user
 
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
     def validate(self, data):
         user = authenticate(**data)
         if user and user.is_active:
-            return user
+            # Return both user and their token
+            token, created = Token.objects.get_or_create(user=user)
+            return {
+                "user": user,
+                "token": token.key
+            }
         raise serializers.ValidationError("Invalid credentials")

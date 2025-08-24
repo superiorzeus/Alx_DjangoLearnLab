@@ -1,0 +1,6 @@
+gunicorn
+whitenoise
+python-dotenv
+dj-database-url
+psycopg[binary]
+Pillow

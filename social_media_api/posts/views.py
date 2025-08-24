@@ -3,6 +3,7 @@ from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
+from notifications.utils import create_notification
 
 # Create your views here.
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -50,3 +51,35 @@ class FeedView(generics.ListAPIView):
         following_users = self.request.user.following.all()
         # Return posts from those users only, ordered by creation date (newest first)
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
+    
+
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        if not created:
+            return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # create notification for post owner
+        if post.author != request.user:
+            create_notification(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post
+            )
+        return Response({"detail": "Post liked."}, status=status.HTTP_201_CREATED)
+
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post).first()
+        if like:
+            like.delete()
+            return Response({"detail": "Post unliked."}, status=status.HTTP_200_OK)
+        return Response({"detail": "You haven't liked this post."}, status=status.HTTP_400_BAD_REQUEST)
